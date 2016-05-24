@@ -36,9 +36,11 @@ def clearvotes():
     output = json.dumps(app_state)
     return output
 
-@app.route('/sendtunes/<data>', methods=['GET'])
-def sendtunes(data):
-    return data
+@app.route('/sendtunes', methods=['GET', 'POST'])
+def sendtunes():
+    if request.method == 'POST':
+        dt = request.form['music']
+    return 'hi'
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=80, debug=True)
