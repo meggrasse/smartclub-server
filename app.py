@@ -40,6 +40,7 @@ def clearvotes():
 def sendtunes():
     if request.method == 'POST':
         dt = request.form['music']
+        app.logger.debug(dt)
     return 'hi'
 
 if __name__ == '__main__':
