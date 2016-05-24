@@ -27,6 +27,18 @@ def downvote():
     output = json.dumps(app_state)
     return output
 
+@app.route('/clearvotes')
+def clearvotes():
+    app_state = pickle.load( open( "app_state.p", "rb" ) )
+    app_state['downvotes'] = 0
+    app_state['upvotes'] = 0
+    pickle.dump( app_state, open( "app_state.p", "wb" ) )
+    output = json.dumps(app_state)
+    return output
+
+@app.route('/sendtunes', methods=['GET', 'POST'])
+def sendtunes():
+    return request.form['music']
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=80, debug=True)
