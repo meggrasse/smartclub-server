@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 import json
 import pickle
 
@@ -40,8 +40,8 @@ def clearvotes():
 def sendtunes():
     if request.method == 'POST':
         dt = request.form['music']
-        app.logger.debug(dt)
+        return dt
     return 'hi'
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=80, debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)
