@@ -45,9 +45,7 @@ def clearvotes():
 @app.route('/sendtunes', methods=['POST'])
 def sendtunes():
     dt = request.form['music']
-    app_state = pickle.load( open( "app_state.p", "rb" ) )
     app_state['music'].extend(dt)
-    pickle.dump( app_state, open( "app_state.p", "wb" ) )
     return json.dumps(app_state['music'])
 
 @app.route('/wasthereascream')
@@ -60,7 +58,6 @@ def wasthereascream():
 
 @app.route('/gettunes')
 def gettunes():
-    app_state = pickle.load( open( "app_state.p", "rb" ) )
     return json.dumps(app_state['music'])
 
 @app.route('/resetscreamtracker')
