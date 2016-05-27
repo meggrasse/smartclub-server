@@ -46,7 +46,7 @@ def clearvotes():
 def sendtunes():
     dt = request.form['music']
     app_state['music'].append(dt)
-    return app_state['music']
+    return json.dumps(app_state['music'])
 
 @app.route('/wasthereascream')
 def wasthereascream():
@@ -54,7 +54,7 @@ def wasthereascream():
 
 @app.route('/gettunes')
 def gettunes():
-    return app_state['music']
+    return json.dumps(app_state['music'])
 
 @app.route('/resetscreamtracker')
 def resetscream():
