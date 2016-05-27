@@ -11,6 +11,12 @@ pickle.dump( app_state, open( "app_state.p", "wb" ) )
 def hello_world():
     return 'Hello World!'
 
+@app.route('/getvotecount')
+def getvotes():
+    app_state = pickle.load( open( "app_state.p", "rb" ) )
+    output = json.dumps(app_state)
+    return output
+    
 @app.route('/upvote')
 def upvote():
     app_state = pickle.load( open( "app_state.p", "rb" ) )
