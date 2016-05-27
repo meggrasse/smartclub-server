@@ -45,6 +45,7 @@ def clearvotes():
 @app.route('/sendtunes', methods=['POST'])
 def sendtunes():
     dt = request.form['music']
+    dt = json.loads(dt)
     app_state['music'].extend(dt)
     return json.dumps(app_state['music'])
 
