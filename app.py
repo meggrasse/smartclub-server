@@ -60,6 +60,7 @@ def wasthereascream():
 
 @app.route('/gettunes')
 def gettunes():
+    app_state = pickle.load( open( "app_state.p", "rb" ) )
     return json.dumps(app_state['music'])
 
 @app.route('/resetscreamtracker')
