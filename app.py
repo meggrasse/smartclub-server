@@ -61,13 +61,14 @@ def wasthereascream():
 
 @app.route('/gettunes')
 def gettunes():
+    app_state = pickle.load( open( "app_state.p", "rb" ) )
     return json.dumps(app_state['music'])
 
 @app.route('/resetscreamtracker')
 def resetscream():
-    # app_state = pickle.load( open( "app_state.p", "rb" ) )
+    app_state = pickle.load( open( "app_state.p", "rb" ) )
     app_state['music'] = []
-    # pickle.dump( app_state, open( "app_state.p", "wb" ) )
+    pickle.dump( app_state, open( "app_state.p", "wb" ) )
     return 'OK'
 
 if __name__ == '__main__':
