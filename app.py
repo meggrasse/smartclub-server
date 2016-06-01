@@ -5,18 +5,22 @@ import threading
 import time
 import logging
 import random
+import os
 from twilio.rest import TwilioRestClient
 
 app = Flask(__name__)
 try:
-    app.config.from_object('config')
+    from config import ACCOUNT_SID, AUTH_TOKEN
+    os.environ['ACCOUNT_SID'] = ACCOUNT_SID
+    os.environ['AUTH_TOKEN'] = AUTH_TOKEN
+    print os.environ['AUTH_TOKEN']
 except:
     pass
 
 app_state = {'upvotes': 0, 'downvotes': 0, 'music':[], '1':[], '2':[]}
 pickle.dump( app_state, open( "app_state.p", "wb" ) )
 
-client = TwilioRestClient(app.config['ACCOUNT_SID'], app.config['AUTH_TOKEN'])
+client = TwilioRestClient(os.environ['ACCOUNT_SID'], os.environ['AUTH_TOKEN'])
 
 class poll_for_imbalance_in_people_distribution(threading.Thread):
     def __init__(self):
