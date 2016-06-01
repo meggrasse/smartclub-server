@@ -1,21 +1,56 @@
 from flask import Flask, request
 import json
 import pickle
+import threading
+import time
+import logging
+import random
+from twilio.rest import TwilioRestClient
 
 app = Flask(__name__)
+try:
+    app.config.from_object('config')
+except:
+    pass
 
-app_state = {'upvotes': 0, 'downvotes': 0, 'music':[], '1':0, '2':0}
+app_state = {'upvotes': 0, 'downvotes': 0, 'music':[], '1':[], '2':[]}
 pickle.dump( app_state, open( "app_state.p", "wb" ) )
+
+client = TwilioRestClient(app.config['ACCOUNT_SID'], app.config['AUTH_TOKEN'])
+
+class poll_for_imbalance_in_people_distribution(threading.Thread):
+    def __init__(self):
+        threading.Thread.__init__(self)
+        self.id = random.random()
+        self.lastone = None
+    def run(self):
+        app.logger.debug("HI!")
+        while True:
+            app_state = pickle.load( open( "app_state.p", "rb" ) )
+            if len(app_state['1']) > len(app_state['2']) and self.lastone is not 1:
+                self.lastone = 1
+                print "ONE", self.id
+                message = client.messages.create(body="Hey server, there are lots of people over by the dance floor!", to="+19145845033", from_="+1 630-755-6548")
+            elif len(app_state['1']) < len(app_state['2']) and self.lastone is not 2:
+                self.lastone = 2
+                print "TWO", self.id
+                message = client.messages.create(body="Hey server, there are lots of people over by the bar!", to="+19145845033", from_="+1 630-755-6548")
+            time.sleep(3)
+
+# initialize polling
+t1 = poll_for_imbalance_in_people_distribution()
+t1.start()
 
 @app.route('/')
 def hello_world():
+    app.logger.debug("OWAH~!")
     return 'Hello World!'
 
 @app.route('/getappstate')
 def getappstate():
     app_state = pickle.load( open( "app_state.p", "rb" ) )
     return json.dumps(app_state)
-    
+
 @app.route('/getvotecount')
 def getvotes():
     app_state = pickle.load( open( "app_state.p", "rb" ) )
@@ -79,19 +114,26 @@ def resetscream():
     pickle.dump( app_state, open( "app_state.p", "wb" ) )
     return 'OK'
 
-@app.route('/1')
-def one():
+@app.route('/1/<uuid>')
+def one(uuid):
     app_state = pickle.load( open( "app_state.p", "rb" ) )
-    app_state['1'] += 1
+    if uuid not in app_state['1']:
+        app_state['1'].append(uuid)
+        if uuid in app_state['2']:
+            app_state['2'].remove(uuid)
     pickle.dump( app_state, open( "app_state.p", "wb" ) )
     return 'OK'
 
-@app.route('/2')
-def two():
+@app.route('/2/<uuid>')
+def two(uuid):
     app_state = pickle.load( open( "app_state.p", "rb" ) )
-    app_state['2'] += 1
+    if uuid not in app_state['2']:
+        app_state['2'].append(uuid)
+        if uuid in app_state['1']:
+            app_state['1'].remove(uuid)
     pickle.dump( app_state, open( "app_state.p", "wb" ) )
     return 'OK'
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=80, debug=True)
+    # app.run(debug=True, use_reloader=False)
+    app.run(host="0.0.0.0", port=80, debug=True, use_reloader=False)
