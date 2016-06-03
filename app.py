@@ -138,6 +138,14 @@ def two(uuid):
     pickle.dump( app_state, open( "app_state.p", "wb" ) )
     return 'OK'
 
+@app.route('/clearlocations')
+def clearlocations():
+    app_state = pickle.load( open( "app_state.p", "rb" ) )
+    app_state['2'] = []
+    app_state['1'] = []
+    pickle.dump( app_state, open( "app_state.p", "wb" ) )
+    return 'OK'
+    
 if __name__ == '__main__':
     # app.run(debug=True, use_reloader=False)
     app.run(host="0.0.0.0", port=80, debug=False, use_reloader=False)
