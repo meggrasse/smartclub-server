@@ -83,34 +83,6 @@ def resetscream():
     app_state['music'] = []
     pickle.dump(app_state, open('app_state.p', 'wb'))
     return 'OK'
-
-@app.route('/1/<uuid>')
-def one(uuid):
-    app_state = pickle.load(open('app_state.p', 'rb'))
-    if uuid not in app_state['1']:
-        app_state['1'].append(uuid)
-        if uuid in app_state['2']:
-            app_state['2'].remove(uuid)
-    pickle.dump(app_state, open('app_state.p', 'wb'))
-    return 'OK'
-
-@app.route('/2/<uuid>')
-def two(uuid):
-    app_state = pickle.load(open('app_state.p', 'rb'))
-    if uuid not in app_state['2']:
-        app_state['2'].append(uuid)
-        if uuid in app_state['1']:
-            app_state['1'].remove(uuid)
-    pickle.dump(app_state, open('app_state.p', 'wb'))
-    return 'OK'
-
-@app.route('/clearlocations')
-def clearlocations():
-    app_state = pickle.load(open('app_state.p', 'rb'))
-    app_state['2'] = []
-    app_state['1'] = []
-    pickle.dump(app_state, open('app_state.p', 'wb'))
-    return 'OK'
     
 if __name__ == '__main__':
     # app.run(debug=True, use_reloader=False)
