@@ -67,10 +67,10 @@ def sendtunes():
 @app.route('/wasthereascream')
 def wasthereascream():
     app_state = pickle.load(open('app_state.p', 'rb'))
-    if 255 in app_state['music']:
-        return 'Yes'
-    else:
-        return 'No'
+    for amp in app_state['music']:
+        if amp > 150:
+            return 'Yes'
+    return 'No'
 
 @app.route('/gettunes')
 def gettunes():
